@@ -19,13 +19,13 @@ class APIEnv(gym.Env):
 
     def __init__(
         self,
-        state_rewards={
+        state_rewards: dict = {
             "availability": {"Available": 5, "Offline": -40},
             "response_speed": {"Fast": 7, "Medium": -2, "Slow": -5},
             "health": {"Healthy": 5, "Error": -10, "Overloaded": -8},
             "request_capacity": {"Low": -5, "Medium": -1, "High": 2},
         },
-        actions_penalties={
+        actions_penalties: dict = {
             "Increase_CPU": -120,
             "Increase_CPU_Slightly": -20,
             "Decrease_CPU": 3,
@@ -53,19 +53,7 @@ class APIEnv(gym.Env):
         self.state_space = len(self.states)
 
         # Definindo as ações (A)
-        self.actions = [
-            "Increase_CPU",
-            "Increase_CPU_Slightly",
-            "Decrease_CPU",
-            "Decrease_CPU_Slightly",
-            "Corrective_Maintenance",
-            "Preventive_Maintenance",
-            "Restart_Components",
-            "Update_Version",
-            "Rollback_Version",
-            "Add_Memory",
-            "Remove_Memory",
-        ]
+        self.actions = list(actions_penalties.keys())
         self.action_space = spaces.Discrete(len(self.actions))
 
         self.__availability_rewards = state_rewards["availability"]
