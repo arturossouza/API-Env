@@ -17,7 +17,28 @@ from src.state_transitions.state_action import (
 class APIEnv(gym.Env):
     """Custom environment to model the API with all possible transitions and gradual evolution."""
 
-    def __init__(self):
+    def __init__(
+        self,
+        state_rewards={
+            "availability": {"Available": 5, "Offline": -40},
+            "response_speed": {"Fast": 7, "Medium": -2, "Slow": -5},
+            "health": {"Healthy": 5, "Error": -10, "Overloaded": -8},
+            "request_capacity": {"Low": -5, "Medium": -1, "High": 2},
+        },
+        actions_penalties={
+            "Increase_CPU": -120,
+            "Increase_CPU_Slightly": -20,
+            "Decrease_CPU": 3,
+            "Decrease_CPU_Slightly": 2,
+            "Corrective_Maintenance": -7,
+            "Preventive_Maintenance": -3,
+            "Restart_Components": -4,
+            "Update_Version": -6,
+            "Rollback_Version": -16,
+            "Add_Memory": -95,
+            "Remove_Memory": -2,
+        },
+    ):
         super(APIEnv, self).__init__()
 
         # Definindo os estados (S)
@@ -47,31 +68,19 @@ class APIEnv(gym.Env):
         ]
         self.action_space = spaces.Discrete(len(self.actions))
 
-        self.__availability_rewards = {"Available": 5, "Offline": -40}
+        self.__availability_rewards = state_rewards["availability"]
 
-        self.__response_speed_rewards = {"Fast": 7, "Medium": -2, "Slow": -5}
+        self.__response_speed_rewards = state_rewards["response_speed"]
 
-        self.__health_rewards = {"Healthy": 5, "Error": -10, "Overloaded": -8}
+        self.__health_rewards = state_rewards["health"]
 
-        self.__request_capacity_rewards = {"Low": -5, "Medium": -1, "High": 2}
+        self.__request_capacity_rewards = state_rewards["request_capacity"]
 
         # Definindo a função de recompensas (R) para todos os estados
         self.states_rewards = self.generate_rewards()
 
         # Penalidades para ações que consomem muitos recursos
-        self.action_rewards = {
-            "Increase_CPU": -120,
-            "Increase_CPU_Slightly": -20,
-            "Decrease_CPU": 3,
-            "Decrease_CPU_Slightly": 2,
-            "Corrective_Maintenance": -7,
-            "Preventive_Maintenance": -3,
-            "Restart_Components": -4,
-            "Update_Version": -6,
-            "Rollback_Version": -16,
-            "Add_Memory": -95,
-            "Remove_Memory": -2,
-        }
+        self.action_rewards = actions_penalties
 
         # Definindo a função de recompensas (R) para todos os estados
         self.transition_probabilities = self.generate_transitions()

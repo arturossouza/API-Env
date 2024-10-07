@@ -31,7 +31,7 @@ def plot_action_state_history(history, env):
     ]
     action_names = [env.actions[action] for (state, action, next_state) in history]
 
-    fig, ax = plt.subplots(figsize=(12, 6))
+    fig, ax = plt.subplots(figsize=(30, 15))
     colors = {
         "Available_Fast_Healthy_Low": "green",
         "Available_Fast_Healthy_Medium": "limegreen",
@@ -130,7 +130,7 @@ def plot_action_state_history_with_rewards(history, env):
     ]
     rewards = [reward for (state, action, next_state, reward) in history]
 
-    fig, ax = plt.subplots(figsize=(12, 6))
+    fig, ax = plt.subplots(figsize=(30, 15))
     colors = {
         "Available_Fast_Healthy_Low": "green",
         "Available_Fast_Healthy_Medium": "limegreen",

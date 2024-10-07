@@ -58,7 +58,7 @@ def plot_action_state_history(history, rewards, env):
     ]
 
     # Gráfico de linhas para representar a sequência de estados e ações
-    fig, ax = plt.subplots(figsize=(12, 6))
+    fig, ax = plt.subplots(figsize=(30, 15))
 
     # Definindo cores para os estados finais
     colors = {
@@ -121,7 +121,7 @@ def plot_total_rewards(total_rewards):
     """
     Plota a curva de recompensa acumulada ao longo dos episódios.
     """
-    plt.figure(figsize=(10, 5))
+    plt.figure(figsize=(30, 15))
     plt.plot(total_rewards)
     plt.xlabel("Episodes")
     plt.ylabel("Total Reward")
