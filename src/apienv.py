@@ -5,6 +5,14 @@ import gymnasium as gym
 import numpy as np
 from gymnasium import spaces
 
+from src.state_transitions.state_action import (
+    Availability,
+    Capacity,
+    Health,
+    Maintenance,
+    Speed,
+)
+
 
 class APIEnv(gym.Env):
     """Custom environment to model the API with all possible transitions and gradual evolution."""
@@ -177,104 +185,25 @@ class APIEnv(gym.Env):
     def __adjust_state_component(self, state, action):
         avail, speed, health, capacity = state.split("_")
 
-        # Atualização da Disponibilidade (avail)
-        if action in ["Increase_CPU", "Increase_CPU_Slightly"]:
-            avail = "Available"
-        elif action in ["Decrease_CPU", "Decrease_CPU_Slightly"]:
-            if health in ["Error", "Overloaded"]:
-                avail = "Offline"
-            else:
-                avail = "Available"
-        elif action in [
-            "Corrective_Maintenance",
-            "Preventive_Maintenance",
-            "Restart_Components",
-        ]:
-            avail = "Available"
-        elif action == "Update_Version":
-            if random.random() > 0.5:
-                avail = "Offline"
-                health = "Error"
-            else:
-                avail = "Available"
-                health = "Healthy"
-        elif action == "Rollback_Version":
-            avail = "Available"
-            health = "Healthy"
-        elif action in ["Add_Memory", "Remove_Memory"]:
-            avail = "Available" if health != "Error" else "Offline"
+        avail, speed, health, capacity = Availability(
+            avail, speed, health, capacity
+        ).get_next_most_likely_state(action)
 
-        # Atualização da Velocidade (speed)
-        if action == "Increase_CPU":
-            if speed in ["Slow", "Medium"]:
-                speed = "Fast"
-        elif action == "Increase_CPU_Slightly":
-            if speed == "Slow":
-                speed = "Medium"
-        elif action == "Decrease_CPU":
-            if speed == "Fast":
-                speed = "Medium"
-            elif speed == "Medium":
-                speed = "Slow"
-        elif action == "Decrease_CPU_Slightly":
-            if speed == "Fast":
-                speed = "Medium"
+        avail, speed, health, capacity = Speed(
+            avail, speed, health, capacity
+        ).get_next_most_likely_state(action)
 
-        # Atualização do Estado de Saúde (health)
-        if action == "Corrective_Maintenance":
-            health = "Healthy"
-        elif action == "Preventive_Maintenance":
-            if health == "Overloaded":
-                health = "Healthy"
-        elif action == "Restart_Components":
-            health = "Healthy"
-        elif action == "Update_Version":
-            health = "Error" if random.random() > 0.5 else "Healthy"
-        elif action == "Rollback_Version":
-            health = "Healthy"
+        avail, speed, health, capacity = Health(
+            avail, speed, health, capacity
+        ).get_next_most_likely_state(action)
 
-        # Atualização da Capacidade (capacity)
-        if action in ["Increase_CPU", "Increase_CPU_Slightly"]:
-            if capacity == "Low":
-                capacity = "Medium"
-            elif capacity == "Medium":
-                capacity = "High"
-        elif action == "Decrease_CPU":
-            if capacity == "High":
-                capacity = "Medium"
-            elif capacity == "Medium":
-                capacity = "Low"
-        elif action == "Decrease_CPU_Slightly":
-            if capacity == "High":
-                capacity = "Medium"
-            elif capacity == "Medium":
-                capacity = "Low"
+        avail, speed, health, capacity = Capacity(
+            avail, speed, health, capacity
+        ).get_next_most_likely_state(action)
 
-        # **Intervenções em outras features por ações de manutenção**
-        # Para 'Corrective_Maintenance'
-        if action == "Corrective_Maintenance":
-            if speed == "Slow":
-                speed = "Medium"  # Correção pode melhorar a velocidade
-            if capacity == "Low":
-                capacity = "Medium"  # Melhora de capacidade com manutenção corretiva
-            avail = "Available"  # Disponibilidade garantida após manutenção
-
-        # Para 'Preventive_Maintenance'
-        elif action == "Preventive_Maintenance":
-            if speed == "Fast":
-                speed = "Medium"  # Manutenção preventiva pode desacelerar um pouco o sistema
-            if capacity == "High":
-                capacity = (
-                    "Medium"  # Prevenção pode reduzir a capacidade momentaneamente
-                )
-            avail = "Available"  # Sistema mantido disponível
-
-        # Para 'Restart_Components'
-        elif action == "Restart_Components":
-            speed = "Medium"  # O reinício tende a estabilizar o sistema em 'Medium'
-            capacity = "Medium"  # Capacidade estabilizada após reiniciar
-            health = "Healthy"  # Reinício corrige problemas
-            avail = "Available"  # Disponibilidade garantida após reinício
+        avail, speed, health, capacity = Maintenance(
+            avail, speed, health, capacity
+        ).get_next_most_likely_state(action)
 
         return f"{avail}_{speed}_{health}_{capacity}"
 
@@ -283,111 +212,25 @@ class APIEnv(gym.Env):
 
         # Lógica de transição secundária (efeito contrário)
 
-        # Atualização da Disponibilidade (avail)
-        if action in ["Increase_CPU", "Increase_CPU_Slightly"]:
-            avail = "Available" if health != "Error" else "Offline"
-        elif action in ["Decrease_CPU", "Decrease_CPU_Slightly"]:
-            if health in ["Error", "Overloaded"]:
-                avail = (
-                    "Available"  # Efeito contrário: manter disponível mesmo com erro
-                )
-            else:
-                avail = "Offline"
-        elif action in [
-            "Corrective_Maintenance",
-            "Preventive_Maintenance",
-            "Restart_Components",
-        ]:
-            avail = "Offline"  # Efeito contrário: sistema cai após manutenção
-        elif action == "Update_Version":
-            if random.random() > 0.5:
-                avail = "Available"
-            else:
-                avail = "Offline"
-        elif action == "Rollback_Version":
-            avail = "Offline"  # Efeito contrário: rollback deixa o sistema offline
-        elif action in ["Add_Memory", "Remove_Memory"]:
-            avail = "Offline" if health == "Error" else "Available"
+        avail, speed, health, capacity = Availability(
+            avail, speed, health, capacity
+        ).get_next_second_likely_state(action)
 
-        # Atualização da Velocidade (speed)
-        if action == "Increase_CPU":
-            if speed == "Fast":
-                speed = "Medium"  # Efeito contrário: velocidade diminui
-            elif speed == "Medium":
-                speed = "Slow"
-        elif action == "Increase_CPU_Slightly":
-            if speed == "Medium":
-                speed = "Slow"
-        elif action == "Decrease_CPU":
-            if speed == "Slow":
-                speed = (
-                    "Fast"  # Efeito contrário: aumento de velocidade após diminuir CPU
-                )
-            elif speed == "Medium":
-                speed = "Fast"
-        elif action == "Decrease_CPU_Slightly":
-            if speed == "Slow":
-                speed = "Fast"
+        avail, speed, health, capacity = Speed(
+            avail, speed, health, capacity
+        ).get_next_second_likely_state(action)
 
-        # Atualização do Estado de Saúde (health)
-        if action == "Corrective_Maintenance":
-            health = (
-                "Overloaded" if health == "Healthy" else "Error"
-            )  # Correção faz o sistema falhar
-        elif action == "Preventive_Maintenance":
-            if health == "Healthy":
-                health = "Overloaded"  # Prevenção sobrecarrega o sistema
-        elif action == "Restart_Components":
-            health = "Error"  # Efeito contrário: reiniciar piora o estado de saúde
-        elif action == "Update_Version":
-            health = (
-                "Error" if random.random() > 0.5 else "Overloaded"
-            )  # Versão causa sobrecarga ou erro
-        elif action == "Rollback_Version":
-            health = "Error"
+        avail, speed, health, capacity = Health(
+            avail, speed, health, capacity
+        ).get_next_second_likely_state(action)
 
-        # Atualização da Capacidade (capacity)
-        if action in ["Increase_CPU", "Increase_CPU_Slightly"]:
-            if capacity == "High":
-                capacity = (
-                    "Low"  # Efeito contrário: redução da capacidade ao aumentar CPU
-                )
-            elif capacity == "Medium":
-                capacity = "Low"
-        elif action == "Decrease_CPU":
-            if capacity == "Low":
-                capacity = (
-                    "High"  # Efeito contrário: aumento da capacidade ao diminuir CPU
-                )
-            elif capacity == "Medium":
-                capacity = "High"
-        elif action == "Decrease_CPU_Slightly":
-            if capacity == "Low":
-                capacity = "Medium"
+        avail, speed, health, capacity = Capacity(
+            avail, speed, health, capacity
+        ).get_next_second_likely_state(action)
 
-        # **Intervenções contrárias nas outras features por ações de manutenção**
-        # Para 'Corrective_Maintenance'
-        if action == "Corrective_Maintenance":
-            if speed == "Medium":
-                speed = "Slow"  # Efeito contrário: manutenção reduz a velocidade
-            if capacity == "Medium":
-                capacity = "Low"  # Capacidade diminui com a manutenção corretiva
-            avail = "Offline"  # Disponibilidade cai após a manutenção
-
-        # Para 'Preventive_Maintenance'
-        elif action == "Preventive_Maintenance":
-            if speed == "Fast":
-                speed = "Slow"  # Manutenção preventiva reduz muito a velocidade
-            if capacity == "High":
-                capacity = "Low"  # Capacidade cai drasticamente
-            avail = "Offline"  # Sistema cai preventivamente
-
-        # Para 'Restart_Components'
-        elif action == "Restart_Components":
-            speed = "Slow"  # Reinício causa lentidão
-            capacity = "Low"  # Capacidade reduzida após reinício
-            health = "Error"  # Reinício piora o estado de saúde
-            avail = "Offline"  # Sistema cai após reinício
+        avail, speed, health, capacity = Maintenance(
+            avail, speed, health, capacity
+        ).get_next_second_likely_state(action)
 
         return f"{avail}_{speed}_{health}_{capacity}"
 
