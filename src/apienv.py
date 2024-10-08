@@ -182,52 +182,26 @@ class APIEnv(gym.Env):
     def __adjust_state_component(self, state, action):
         avail, speed, health, capacity = state.split("_")
 
-        avail, speed, health, capacity = Availability(
-            avail, speed, health, capacity
-        ).get_next_most_likely_state(action)
+        avail = Availability(avail, health).get_next_most_likely_state(action)
+        speed = Speed(speed).get_next_most_likely_state(action)
+        health = Health(health).get_next_most_likely_state(action)
+        capacity = Capacity(capacity).get_next_most_likely_state(action)
 
-        avail, speed, health, capacity = Speed(
-            avail, speed, health, capacity
-        ).get_next_most_likely_state(action)
-
-        avail, speed, health, capacity = Health(
-            avail, speed, health, capacity
-        ).get_next_most_likely_state(action)
-
-        avail, speed, health, capacity = Capacity(
-            avail, speed, health, capacity
-        ).get_next_most_likely_state(action)
-
-        avail, speed, health, capacity = Maintenance(
-            avail, speed, health, capacity
-        ).get_next_most_likely_state(action)
+        if action in ["Corrective_Maintenance", "Preventive_Maintenance", "Restart_Components"]:
+            speed, capacity, health = Maintenance(speed, capacity, health).get_next_most_likely_state(action)
 
         return f"{avail}_{speed}_{health}_{capacity}"
 
     def __adjust_secondary_state(self, state, action):
         avail, speed, health, capacity = state.split("_")
 
-        # Lógica de transição secundária (efeito contrário)
+        avail = Availability(avail, health).get_next_second_likely_state(action)
+        speed = Speed(speed).get_next_second_likely_state(action)
+        health = Health(health).get_next_second_likely_state(action)
+        capacity = Capacity(capacity).get_next_second_likely_state(action)
 
-        avail, speed, health, capacity = Availability(
-            avail, speed, health, capacity
-        ).get_next_second_likely_state(action)
-
-        avail, speed, health, capacity = Speed(
-            avail, speed, health, capacity
-        ).get_next_second_likely_state(action)
-
-        avail, speed, health, capacity = Health(
-            avail, speed, health, capacity
-        ).get_next_second_likely_state(action)
-
-        avail, speed, health, capacity = Capacity(
-            avail, speed, health, capacity
-        ).get_next_second_likely_state(action)
-
-        avail, speed, health, capacity = Maintenance(
-            avail, speed, health, capacity
-        ).get_next_second_likely_state(action)
+        if action in ["Corrective_Maintenance", "Preventive_Maintenance", "Restart_Components"]:
+            speed, capacity, health = Maintenance(speed, capacity, health).get_next_second_likely_state(action)
 
         return f"{avail}_{speed}_{health}_{capacity}"
 
