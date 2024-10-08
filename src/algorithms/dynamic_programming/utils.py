@@ -68,7 +68,7 @@ def plot_action_state_history(history, rewards, env):
         "Available_Medium_Healthy_Low": "lightgreen",  # Médio saudável com baixa carga
         "Available_Medium_Healthy_Medium": "yellowgreen",  # Médio saudável com carga média
         "Available_Medium_Healthy_High": "yellow",  # Médio saudável com alta carga
-        "Available_Slow_Healthy_Low": "lightyellow",  # Saudável, mas lento
+        "Available_Slow_Healthy_Low": "blue",  # Saudável, mas lento
         "Available_Slow_Healthy_High": "orange",  # Saudável, mas muito lento
         "Available_Fast_Error_Low": "lightcoral",  # Erros leves, rápido
         "Available_Fast_Error_Medium": "red",  # Erros médios

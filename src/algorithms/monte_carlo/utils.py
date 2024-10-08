@@ -60,7 +60,7 @@ def plot_action_state_history_with_rewards(history, env):
         "Available_Fast_Healthy_High": "darkgreen",
         "Available_Slow_Overloaded_High": "orange",
         "Available_Slow_Healthy_High": "yellowgreen",
-        "Available_Slow_Healthy_Low": "lightyellow",
+        "Available_Slow_Healthy_Low": "blue",
         "Available_Medium_Error_High": "brown",
         "Available_Medium_Healthy_High": "yellow",
         "Available_Medium_Healthy_Low": "lightgreen",
