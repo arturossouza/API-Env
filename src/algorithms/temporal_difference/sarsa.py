@@ -89,7 +89,7 @@ def sarsa_learning(
 
         # Exibe o progresso a cada 100 episódios
         if episode % 100 == 0:
-            print(f"Episódioooo {episode}/{num_episodes} concluído.")
+            print(f"Episódio {episode}/{num_episodes} concluído.")
 
     # Gera a política final determinística (greedy)
     policy = {}
