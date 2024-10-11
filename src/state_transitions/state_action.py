@@ -9,9 +9,7 @@ class Availability(Transitions):
         self.health = health
 
     def get_next_most_likely_state(self, action):
-        if action in ["Increase_CPU", "Increase_CPU_Slightly"]:
-            return "Available"
-        elif action in ["Decrease_CPU", "Decrease_CPU_Slightly"]:
+        if action in ["Decrease_CPU", "Decrease_CPU_Slightly"]:
             return "Offline" if self.health in ["Error", "Overloaded"] else "Available"
         elif action in ["Corrective_Maintenance", "Preventive_Maintenance", "Restart_Components"]:
             return "Available"
@@ -26,9 +24,7 @@ class Availability(Transitions):
         return self.avail
 
     def get_next_second_likely_state(self, action):
-        if action in ["Increase_CPU", "Increase_CPU_Slightly"]:
-            return "Available" if self.health != "Error" else "Offline"
-        elif action in ["Decrease_CPU", "Decrease_CPU_Slightly"]:
+        if action in ["Decrease_CPU", "Decrease_CPU_Slightly"]:
             return "Offline" if self.health in ["Error", "Overloaded"] else "Available"
         elif action in ["Corrective_Maintenance", "Preventive_Maintenance", "Restart_Components"]:
             return "Offline"
@@ -56,14 +52,10 @@ class Speed(Transitions):
             return "Medium" if self.speed == "Fast" else "Slow"
         elif action == "Decrease_CPU_Slightly":
             return "Medium" if self.speed == "Fast" else self.speed
-        elif action in ["Corrective_Maintenance", "Preventive_Maintenance", "Restart_Components"]:
-            return "Medium"  # Manutenção mantém a velocidade em "Medium"
         elif action == "Update_Version":
             return "Medium"  # Versão atualiza a velocidade para média
         elif action == "Rollback_Version":
             return "Slow"  # Rollback reverte para velocidade lenta
-        elif action == "Add_Memory":
-            return "Fast" if self.speed in ["Slow", "Medium"] else self.speed
         elif action == "Remove_Memory":
             return "Slow"  # Remover memória diminui a velocidade
         return self.speed
@@ -77,8 +69,6 @@ class Speed(Transitions):
             return "Fast" if self.speed == "Slow" else "Medium"
         elif action == "Decrease_CPU_Slightly":
             return "Fast" if self.speed == "Slow" else self.speed
-        elif action in ["Corrective_Maintenance", "Preventive_Maintenance", "Restart_Components"]:
-            return "Slow"
         elif action == "Update_Version":
             return "Fast"
         elif action == "Rollback_Version":
@@ -133,16 +123,12 @@ class Capacity(Transitions):
         self.capacity = capacity
 
     def get_next_most_likely_state(self, action):
-        if action in ["Increase_CPU", "Increase_CPU_Slightly"]:
-            return "Medium" if self.capacity == "Low" else "High"
-        elif action in ["Decrease_CPU", "Decrease_CPU_Slightly"]:
+        if action in ["Decrease_CPU", "Decrease_CPU_Slightly"]:
             return "Medium" if self.capacity == "High" else "Low"
         elif action == "Add_Memory":
             return "High" if self.capacity == "Medium" else "Medium"
         elif action == "Remove_Memory":
             return "Low" if self.capacity == "High" else "Medium"
-        elif action in ["Corrective_Maintenance", "Preventive_Maintenance", "Restart_Components"]:
-            return "Medium"
         elif action == "Update_Version":
             return "High"
         elif action == "Rollback_Version":
@@ -150,9 +136,7 @@ class Capacity(Transitions):
         return self.capacity
 
     def get_next_second_likely_state(self, action):
-        if action in ["Increase_CPU", "Increase_CPU_Slightly"]:
-            return "Low" if self.capacity == "High" else "Medium"
-        elif action in ["Decrease_CPU", "Decrease_CPU_Slightly"]:
+        if action in ["Decrease_CPU", "Decrease_CPU_Slightly"]:
             return "High" if self.capacity == "Low" else "Medium"
         elif action in ["Add_Memory"]:
             return "Low" if self.capacity == "High" else "Medium"
@@ -175,11 +159,11 @@ class Maintenance(Transitions):
 
     def get_next_most_likely_state(self, action):
         if action == "Corrective_Maintenance":
-            return "Medium" if self.speed == "Slow" else self.speed, "Medium" if self.capacity == "Low" else self.capacity, "Healthy"
+            return "Medium" if self.speed == "Slow" else self.speed, self.capacity, "Healthy"
         elif action == "Preventive_Maintenance":
             return "Medium" if self.speed == "Fast" else self.speed, "Medium" if self.capacity == "High" else self.capacity, self.health
         elif action == "Restart_Components":
-            return "Medium", "Medium", "Healthy"
+            return "Slow", "Low", "Healthy"
         return self.speed, self.capacity, self.health
 
     def get_next_second_likely_state(self, action):
