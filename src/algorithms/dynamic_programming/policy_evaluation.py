@@ -2,7 +2,7 @@ import numpy as np
 
 def policy_evaluation(policy, env, discount_factor=0.9, theta=0.000001):
     """
-    Avalia uma política, calculando a função de valor V(s) para cada estado e as recompensas totais por iteração.
+    Avalia uma política, calculando a função de valor V(s) para cada estado e as recompensas totais por episódio.
 
     Args:
         policy: Matriz de políticas (s, a) onde s são os estados e a são as ações.
@@ -12,14 +12,14 @@ def policy_evaluation(policy, env, discount_factor=0.9, theta=0.000001):
 
     Returns:
         V: Vetor contendo a função de valor para cada estado.
-        iteration_rewards: Lista contendo a recompensa total acumulada para cada iteração.
+        total_rewards: Lista contendo a recompensa total acumulada para cada episódio.
     """
     V = np.zeros(env.state_space)
-    iteration_rewards = []  # Lista para armazenar as recompensas acumuladas por iteração
+    total_rewards = []  # Lista para armazenar as recompensas acumuladas em cada episódio
 
     while True:
         delta = 0
-        episode_reward = 0  # Recompensa acumulada para a iteração atual
+        episode_reward = 0  # Recompensa acumulada para cada episódio
 
         for s in range(env.state_space):
             v = 0
@@ -49,13 +49,13 @@ def policy_evaluation(policy, env, discount_factor=0.9, theta=0.000001):
             delta = max(delta, np.abs(v - V[s]))
             V[s] = v
 
-        # Armazena a recompensa total acumulada na iteração atual
-        iteration_rewards.append(episode_reward)
+        # Armazena a recompensa total acumulada no episódio
+        total_rewards.append(episode_reward)
 
         if delta < theta:
             break
 
-    return V, iteration_rewards
+    return V, total_rewards
 
 
 def policy_improvement(env, discount_factor=0.9, theta=0.000001):
@@ -67,11 +67,11 @@ def policy_improvement(env, discount_factor=0.9, theta=0.000001):
     policy = np.ones([env.state_space, env.action_space.n]) / env.action_space.n
 
     iteration = 0
-    iteration_rewards_log = []  # Para armazenar as recompensas acumuladas por iteração
+    total_rewards = []  # Para armazenar as recompensas acumuladas por episódio
 
     while True:
-        V, iteration_rewards = policy_evaluation(policy, env, discount_factor, theta)
-        iteration_rewards_log.append(iteration_rewards)  # Armazena as recompensas da iteração
+        V, rewards = policy_evaluation(policy, env, discount_factor, theta)
+        total_rewards.extend(rewards)  # Armazena todas as recompensas acumuladas de cada episódio
 
         policy_stable = True
         for s in range(env.state_space):
@@ -106,4 +106,4 @@ def policy_improvement(env, discount_factor=0.9, theta=0.000001):
             print(f"Política estável após {iteration} iterações")
             break
 
-    return policy, V, iteration_rewards_log
+    return policy, V, total_rewards
