@@ -9,9 +9,7 @@ class Availability(Transitions):
         self.health = health
 
     def get_next_most_likely_state(self, action):
-        if action in ["Increase_CPU", "Increase_CPU_Slightly"]:
-            return "Available"
-        elif action in ["Decrease_CPU", "Decrease_CPU_Slightly"]:
+        if action in ["Decrease_CPU", "Decrease_CPU_Slightly"]:
             return "Offline" if self.health in ["Error", "Overloaded"] else "Available"
         elif action in ["Corrective_Maintenance", "Preventive_Maintenance", "Restart_Components"]:
             return "Available"
@@ -26,9 +24,7 @@ class Availability(Transitions):
         return self.avail
 
     def get_next_second_likely_state(self, action):
-        if action in ["Increase_CPU", "Increase_CPU_Slightly"]:
-            return "Available" if self.health != "Error" else "Offline"
-        elif action in ["Decrease_CPU", "Decrease_CPU_Slightly"]:
+        if action in ["Decrease_CPU", "Decrease_CPU_Slightly"]:
             return "Offline" if self.health in ["Error", "Overloaded"] else "Available"
         elif action in ["Corrective_Maintenance", "Preventive_Maintenance", "Restart_Components"]:
             return "Offline"
@@ -133,9 +129,7 @@ class Capacity(Transitions):
         self.capacity = capacity
 
     def get_next_most_likely_state(self, action):
-        if action in ["Increase_CPU", "Increase_CPU_Slightly"]:
-            return "Medium" if self.capacity == "Low" else "High"
-        elif action in ["Decrease_CPU", "Decrease_CPU_Slightly"]:
+        if action in ["Decrease_CPU", "Decrease_CPU_Slightly"]:
             return "Medium" if self.capacity == "High" else "Low"
         elif action == "Add_Memory":
             return "High" if self.capacity == "Medium" else "Medium"
@@ -150,9 +144,7 @@ class Capacity(Transitions):
         return self.capacity
 
     def get_next_second_likely_state(self, action):
-        if action in ["Increase_CPU", "Increase_CPU_Slightly"]:
-            return "Low" if self.capacity == "High" else "Medium"
-        elif action in ["Decrease_CPU", "Decrease_CPU_Slightly"]:
+        if action in ["Decrease_CPU", "Decrease_CPU_Slightly"]:
             return "High" if self.capacity == "Low" else "Medium"
         elif action in ["Add_Memory"]:
             return "Low" if self.capacity == "High" else "Medium"
