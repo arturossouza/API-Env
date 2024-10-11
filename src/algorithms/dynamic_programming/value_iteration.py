@@ -2,7 +2,8 @@ import numpy as np
 
 def value_iteration(env, theta=0.000001, discount_factor=0.9):
     """
-    Value Iteration Algorithm adapted for custom environment with probabilistic transitions.
+    Value Iteration Algorithm adapted for custom environment with probabilistic transitions,
+    and tracking of rewards per episode.
 
     Args:
         env: Custom environment with defined states and actions.
@@ -10,7 +11,7 @@ def value_iteration(env, theta=0.000001, discount_factor=0.9):
         discount_factor: Gamma discount factor.
 
     Returns:
-        A tuple (policy, V) of the optimal policy and the optimal value function.
+        A tuple (policy, V, episode_rewards) of the optimal policy, the optimal value function, and rewards per episode.
     """
 
     def one_step_lookahead(state, V):
@@ -34,21 +35,24 @@ def value_iteration(env, theta=0.000001, discount_factor=0.9):
 
         return A
 
-    # Initialize the value function for all states
+    # Initialize value function for all states
     V = np.zeros(env.state_space)
     episode = 0
-    episode_deltas = []
+    episode_rewards = []
 
     while True:
         episode += 1
         delta = 0.0
+        total_episode_reward = 0  # Track rewards for the current episode
+
         for s in range(env.state_space):
             A = one_step_lookahead(s, V)
             best_action_value = np.max(A)
+            total_episode_reward += best_action_value  # Sum the rewards for the episode
             delta = max(delta, np.abs(best_action_value - V[s]))
             V[s] = best_action_value
 
-        episode_deltas.append(delta)
+        episode_rewards.append(total_episode_reward)  # Store reward of the episode
 
         if delta < theta:
             break
@@ -60,4 +64,4 @@ def value_iteration(env, theta=0.000001, discount_factor=0.9):
         best_action = np.argmax(A)
         policy[s, best_action] = 1.0
 
-    return policy, V, episode_deltas
+    return policy, V, episode_rewards
