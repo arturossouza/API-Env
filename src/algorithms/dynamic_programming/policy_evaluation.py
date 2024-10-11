@@ -3,7 +3,7 @@ import numpy as np
 
 def policy_evaluation(policy, env, discount_factor=0.9, theta=0.000001):
     """
-    Avalia uma política, calculando a função de valor V(s) para cada estado e acumulando as recompensas.
+    Avalia uma política, calculando a função de valor V(s) para cada estado e as recompensas totais por episódio.
 
     Args:
         policy: Matriz de políticas (s, a) onde s são os estados e a são as ações.
@@ -13,14 +13,15 @@ def policy_evaluation(policy, env, discount_factor=0.9, theta=0.000001):
 
     Returns:
         V: Vetor contendo a função de valor para cada estado.
-        total_rewards: Lista de recompensas totais por episódio.
+        total_rewards: Lista contendo a recompensa total acumulada para cada episódio.
     """
     V = np.zeros(env.state_space)
-    total_rewards = []
+    total_rewards = []  # Lista para armazenar as recompensas acumuladas em cada episódio
 
     while True:
         delta = 0
-        episode_reward = 0  # Acumulador de recompensa por episódio
+        episode_reward = 0  # Recompensa acumulada para cada episódio
+
         for s in range(env.state_space):
             v = 0
             state_str = env.states[s]
@@ -38,17 +39,19 @@ def policy_evaluation(policy, env, discount_factor=0.9, theta=0.000001):
                     reward = env.states_rewards.get(next_state_str, 0)
                     penalty = env.action_rewards.get(action_str, 0)
                     v += (
-                            action_prob
-                            * prob
-                            * (reward + penalty + discount_factor * V[next_state])
+                        action_prob
+                        * prob
+                        * (reward + penalty + discount_factor * V[next_state])
                     )
 
-                    episode_reward += reward  # Acumula a recompensa para o episódio atual
+                    # Acumula as recompensas
+                    episode_reward += reward
 
             delta = max(delta, np.abs(v - V[s]))
             V[s] = v
 
-        total_rewards.append(episode_reward)  # Armazena a recompensa total do episódio
+        # Armazena a recompensa total acumulada no episódio
+        total_rewards.append(episode_reward)
 
         if delta < theta:
             break
@@ -65,11 +68,11 @@ def policy_improvement(env, discount_factor=0.9, theta=0.000001):
     policy = np.ones([env.state_space, env.action_space.n]) / env.action_space.n
 
     iteration = 0
-    total_rewards = []
+    total_rewards = []  # Para armazenar as recompensas acumuladas
 
     while True:
-        V, episode_rewards = policy_evaluation(policy, env, discount_factor, theta)
-        total_rewards.extend(episode_rewards)  # Acumula as recompensas totais
+        V, rewards = policy_evaluation(policy, env, discount_factor, theta)
+        total_rewards.extend(rewards)  # Armazena todas as recompensas acumuladas
 
         policy_stable = True
         for s in range(env.state_space):
@@ -89,7 +92,7 @@ def policy_improvement(env, discount_factor=0.9, theta=0.000001):
                     reward = env.states_rewards.get(next_state_str, 0)
                     penalty = env.action_rewards.get(action_str, 0)
                     action_values[a] += prob * (
-                            reward + penalty + discount_factor * V[next_state]
+                        reward + penalty + discount_factor * V[next_state]
                     )
 
             best_action = np.argmax(action_values)
