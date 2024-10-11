@@ -121,7 +121,9 @@ def plot_total_rewards(total_rewards):
     """
     Plota a curva de recompensa acumulada ao longo dos episódios e printa o somatório das recompensas.
     """
-    print(f"Somatório das recompensas: {total_rewards}")
+    # Printar o somatório das recompensas
+    total_sum_rewards = sum(total_rewards)
+    print(f"Somatório das recompensas: {total_sum_rewards}")
 
     # Plotar o gráfico
     plt.figure(figsize=(30, 15))
