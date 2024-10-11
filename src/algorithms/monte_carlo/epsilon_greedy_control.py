@@ -1,7 +1,5 @@
 from collections import defaultdict
-
 import numpy as np
-
 
 def epsilon_greedy_policy(Q, state, nA, epsilon):
     """
@@ -21,7 +19,6 @@ def epsilon_greedy_policy(Q, state, nA, epsilon):
     policy[best_action] += 1.0 - epsilon
     return policy
 
-
 def mc_control_epsilon_greedy(env, num_episodes, discount_factor=1.0, epsilon=0.1):
     """
     Monte Carlo Control usando uma política epsilon-greedy.
@@ -35,11 +32,14 @@ def mc_control_epsilon_greedy(env, num_episodes, discount_factor=1.0, epsilon=0.
     Returns:
         Q: A função valor-ação otimizada após o treinamento.
         policy: A política otimizada derivada de Q.
+        total_rewards_per_episode: Lista contendo a recompensa total acumulada em cada episódio.
     """
     # Função Q(s, a) armazenada como um dicionário de dicionários
     Q = defaultdict(lambda: np.zeros(env.action_space.n))
     returns_sum = defaultdict(float)
     returns_count = defaultdict(float)
+
+    total_rewards_per_episode = []
 
     for i_episode in range(1, num_episodes + 1):
         # Mostra o progresso a cada 1000 episódios
@@ -51,6 +51,8 @@ def mc_control_epsilon_greedy(env, num_episodes, discount_factor=1.0, epsilon=0.
         state, _ = env.reset()
 
         done = False
+        episode_reward = 0  # Inicializa a recompensa total do episódio
+
         while not done:
             # Seleciona uma ação usando a política epsilon-greedy
             policy = epsilon_greedy_policy(Q, state, env.action_space.n, epsilon)
@@ -60,6 +62,10 @@ def mc_control_epsilon_greedy(env, num_episodes, discount_factor=1.0, epsilon=0.
             next_state, reward, done, _, _ = env.step(action)
             episode.append((state, action, reward))
             state = next_state
+            episode_reward += reward  # Acumula a recompensa total
+
+        # Armazena a recompensa total do episódio
+        total_rewards_per_episode.append(episode_reward)
 
         # Calcula o retorno (G) para cada par estado-ação do episódio
         G = 0
@@ -82,4 +88,4 @@ def mc_control_epsilon_greedy(env, num_episodes, discount_factor=1.0, epsilon=0.
         best_action = np.argmax(Q[state])
         policy[state] = np.eye(env.action_space.n)[best_action]
 
-    return Q, policy
+    return Q, policy, total_rewards_per_episode
