@@ -159,7 +159,7 @@ class Maintenance(Transitions):
 
     def get_next_most_likely_state(self, action):
         if action == "Corrective_Maintenance":
-            return "Medium" if self.speed == "Slow" else self.speed, "Medium" if self.capacity == "Low" else self.capacity, "Healthy"
+            return "Medium" if self.speed == "Slow" else self.speed, self.capacity, "Healthy"
         elif action == "Preventive_Maintenance":
             return "Medium" if self.speed == "Fast" else self.speed, "Medium" if self.capacity == "High" else self.capacity, self.health
         elif action == "Restart_Components":
