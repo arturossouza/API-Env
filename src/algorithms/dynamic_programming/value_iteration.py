@@ -1,6 +1,5 @@
 import numpy as np
 
-
 def value_iteration(env, theta=0.000001, discount_factor=0.9):
     """
     Value Iteration Algorithm adapted for custom environment with probabilistic transitions.
@@ -35,9 +34,10 @@ def value_iteration(env, theta=0.000001, discount_factor=0.9):
 
         return A
 
-    # Inicializa a função de valor para todos os estados
+    # Initialize the value function for all states
     V = np.zeros(env.state_space)
     episode = 0
+    episode_deltas = []
 
     while True:
         episode += 1
@@ -48,8 +48,7 @@ def value_iteration(env, theta=0.000001, discount_factor=0.9):
             delta = max(delta, np.abs(best_action_value - V[s]))
             V[s] = best_action_value
 
-        if episode % 10 == 0:
-            print(f"Episódio {episode}: delta = {delta}")
+        episode_deltas.append(delta)
 
         if delta < theta:
             break
@@ -61,4 +60,4 @@ def value_iteration(env, theta=0.000001, discount_factor=0.9):
         best_action = np.argmax(A)
         policy[s, best_action] = 1.0
 
-    return policy, V
+    return policy, V, episode_deltas
