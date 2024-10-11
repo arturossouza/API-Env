@@ -23,19 +23,19 @@ class APIEnv(gym.Env):
             "availability": {"Available": 5, "Offline": -40},
             "response_speed": {"Fast": 7, "Medium": -2, "Slow": -5},
             "health": {"Healthy": 5, "Error": -10, "Overloaded": -8},
-            "request_capacity": {"Low": -5, "Medium": 1, "High": 5},
+            "request_capacity": {"Low": -5, "Medium": -1, "High": 2},
         },
         actions_penalties: dict = {
-            "Increase_CPU": -60,
-            "Increase_CPU_Slightly": -10,
-            "Decrease_CPU": -1,
-            "Decrease_CPU_Slightly": -3,
+            "Increase_CPU": -120,
+            "Increase_CPU_Slightly": -20,
+            "Decrease_CPU": 3,
+            "Decrease_CPU_Slightly": 2,
             "Corrective_Maintenance": -7,
             "Preventive_Maintenance": -3,
             "Restart_Components": -4,
             "Update_Version": -6,
             "Rollback_Version": -16,
-            "Add_Memory": -50,
+            "Add_Memory": -95,
             "Remove_Memory": -2,
         },
     ):
@@ -149,20 +149,20 @@ class APIEnv(gym.Env):
 
                 # Definir uma probabilidade para a transição principal
                 if action in ["Increase_CPU", "Decrease_CPU"]:
-                    main_prob = 0.95
+                    main_prob = random.uniform(0.8, 0.9)
                 elif action in ["Corrective_Maintenance", "Preventive_Maintenance"]:
-                    main_prob = 0.95
+                    main_prob = random.uniform(0.7, 0.8)
                 elif action in ["Restart_Components"]:
-                    main_prob = 0.95
+                    main_prob = random.uniform(0.9, 0.95)
                 elif action in ["Add_Memory", "Remove_Memory"]:
-                    main_prob = 0.95
+                    main_prob = random.uniform(0.8, 0.85)
                 else:
-                    main_prob = 0.95
+                    main_prob = random.uniform(0.7, 0.85)
 
                 next_states.append((next_state_main, main_prob))
 
                 next_state_secondary = self.__adjust_secondary_state(state, action)
-                secondary_prob = 0.5
+                secondary_prob = random.uniform(0.05, 0.2)
 
                 if main_prob + secondary_prob > 1:
                     secondary_prob = 1 - main_prob
