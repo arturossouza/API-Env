@@ -149,15 +149,15 @@ class APIEnv(gym.Env):
 
                 # Definir uma probabilidade para a transição principal
                 if action in ["Increase_CPU", "Decrease_CPU"]:
-                    main_prob = random.random(0.9)
+                    main_prob = 0.9
                 elif action in ["Corrective_Maintenance", "Preventive_Maintenance"]:
-                    main_prob = random.random(0.8)
+                    main_prob = 0.8
                 elif action in ["Restart_Components"]:
-                    main_prob = random.random(0.95)
+                    main_prob = 0.95
                 elif action in ["Add_Memory", "Remove_Memory"]:
-                    main_prob = random.random(0.85)
+                    main_prob = 0.85
                 else:
-                    main_prob = random.random(0.85)
+                    main_prob = 0.85
 
                 next_states.append((next_state_main, main_prob))
 
