@@ -23,7 +23,7 @@ class APIEnv(gym.Env):
             "availability": {"Available": 5, "Offline": -40},
             "response_speed": {"Fast": 7, "Medium": -2, "Slow": -5},
             "health": {"Healthy": 5, "Error": -10, "Overloaded": -8},
-            "request_capacity": {"Low": -5, "Medium": -1, "High": 2},
+            "request_capacity": {"Low": -5, "Medium": 1, "High": 5},
         },
         actions_penalties: dict = {
             "Increase_CPU": -120,
@@ -149,15 +149,15 @@ class APIEnv(gym.Env):
 
                 # Definir uma probabilidade para a transição principal
                 if action in ["Increase_CPU", "Decrease_CPU"]:
-                    main_prob = random.uniform(0.8, 0.9)
+                    main_prob = random.random(0.9)
                 elif action in ["Corrective_Maintenance", "Preventive_Maintenance"]:
-                    main_prob = random.uniform(0.7, 0.8)
+                    main_prob = random.random(0.8)
                 elif action in ["Restart_Components"]:
-                    main_prob = random.uniform(0.9, 0.95)
+                    main_prob = random.random(0.95)
                 elif action in ["Add_Memory", "Remove_Memory"]:
-                    main_prob = random.uniform(0.8, 0.85)
+                    main_prob = random.random(0.85)
                 else:
-                    main_prob = random.uniform(0.7, 0.85)
+                    main_prob = random.random(0.85)
 
                 next_states.append((next_state_main, main_prob))
 
