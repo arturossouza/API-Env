@@ -48,7 +48,20 @@ def value_iteration(env, theta=0.000001, discount_factor=0.9):
         for s in range(env.state_space):
             A = one_step_lookahead(s, V)
             best_action_value = np.max(A)
-            total_episode_reward += best_action_value  # Sum the rewards for the episode
+
+            # Instead of summing the action value, sum the actual rewards
+            best_action = np.argmax(A)
+            state_str = env.states[s]
+            action_str = env.actions[best_action]
+            transitions = env.transition_probabilities.get(
+                (state_str, action_str), [(state_str, 1.0)]
+            )
+
+            # Calculate the total reward for taking the best action
+            for next_state_str, prob in transitions:
+                reward = env.states_rewards.get(next_state_str, 0)
+                total_episode_reward += prob * reward
+
             delta = max(delta, np.abs(best_action_value - V[s]))
             V[s] = best_action_value
 
