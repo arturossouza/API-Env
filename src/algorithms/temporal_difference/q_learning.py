@@ -1,6 +1,5 @@
 import numpy as np
 
-
 def epsilon_greedy(Q, state, nA, epsilon):
     """
     Escolhe uma ação usando a política epsilon-greedy.
@@ -10,10 +9,7 @@ def epsilon_greedy(Q, state, nA, epsilon):
     else:
         return np.argmax(Q[state])
 
-
-def q_learning(
-    env, num_episodes, alpha=0.1, gamma=0.99, epsilon=0.1, epsilon_decay=0.99
-):
+def q_learning(env, num_episodes, alpha=0.1, gamma=0.99, epsilon=0.1, epsilon_decay=0.99):
     """
     Algoritmo de Q-learning.
 
@@ -28,12 +24,15 @@ def q_learning(
     Returns:
         Q: A função valor-ação aprendida.
         policy: A política derivada da função Q aprendida.
+        total_rewards: Lista com as recompensas totais de cada episódio.
     """
     Q = np.zeros((env.state_space, env.action_space.n))  # Inicializa a função Q
+    total_rewards = []  # Lista para armazenar as recompensas acumuladas em cada episódio
 
     for episode in range(num_episodes):
         state, _ = env.reset()
         done = False
+        episode_reward = 0  # Inicializa a recompensa do episódio
 
         while not done:
             action = epsilon_greedy(Q, state, env.action_space.n, epsilon)
@@ -46,12 +45,15 @@ def q_learning(
             )
 
             state = next_state
+            episode_reward += reward  # Acumula a recompensa do episódio
+
+        total_rewards.append(episode_reward)  # Armazena a recompensa total do episódio
 
         # Reduz epsilon (exploração) ao longo do tempo
         epsilon *= epsilon_decay
 
         if episode % 100 == 0:
-            print(f"Episode {episode}/{num_episodes} completed.")
+            print(f"Episode {episode}/{num_episodes} completed. Total reward: {episode_reward}")
 
     # Deriva a política da função Q aprendida
     policy = np.zeros([env.state_space, env.action_space.n])
@@ -59,4 +61,4 @@ def q_learning(
         best_action = np.argmax(Q[s])
         policy[s, best_action] = 1.0
 
-    return Q, policy
+    return Q, policy, total_rewards
