@@ -52,8 +52,6 @@ class Speed(Transitions):
             return "Medium" if self.speed == "Fast" else "Slow"
         elif action == "Decrease_CPU_Slightly":
             return "Medium" if self.speed == "Fast" else self.speed
-        elif action in ["Corrective_Maintenance", "Preventive_Maintenance", "Restart_Components"]:
-            return "Medium"  # Manutenção mantém a velocidade em "Medium"
         elif action == "Update_Version":
             return "Medium"  # Versão atualiza a velocidade para média
         elif action == "Rollback_Version":
@@ -71,8 +69,6 @@ class Speed(Transitions):
             return "Fast" if self.speed == "Slow" else "Medium"
         elif action == "Decrease_CPU_Slightly":
             return "Fast" if self.speed == "Slow" else self.speed
-        elif action in ["Corrective_Maintenance", "Preventive_Maintenance", "Restart_Components"]:
-            return "Slow"
         elif action == "Update_Version":
             return "Fast"
         elif action == "Rollback_Version":
