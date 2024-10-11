@@ -58,8 +58,6 @@ class Speed(Transitions):
             return "Medium"  # Versão atualiza a velocidade para média
         elif action == "Rollback_Version":
             return "Slow"  # Rollback reverte para velocidade lenta
-        elif action == "Add_Memory":
-            return "Fast" if self.speed in ["Slow", "Medium"] else self.speed
         elif action == "Remove_Memory":
             return "Slow"  # Remover memória diminui a velocidade
         return self.speed
@@ -171,7 +169,7 @@ class Maintenance(Transitions):
         elif action == "Preventive_Maintenance":
             return "Medium" if self.speed == "Fast" else self.speed, "Medium" if self.capacity == "High" else self.capacity, self.health
         elif action == "Restart_Components":
-            return "Medium", "Medium", "Healthy"
+            return "Slow", "Low", "Healthy"
         return self.speed, self.capacity, self.health
 
     def get_next_second_likely_state(self, action):
