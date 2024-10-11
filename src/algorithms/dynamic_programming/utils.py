@@ -117,7 +117,7 @@ def plot_action_state_history(history, rewards, env):
     plt.show()
 
 
-def plot_total_rewards(ep_rewards, total_rewards):
+def plot_total_rewards(total_rewards):
     """
     Plota a curva de recompensa acumulada ao longo dos episódios e printa o somatório das recompensas.
     """
@@ -125,7 +125,7 @@ def plot_total_rewards(ep_rewards, total_rewards):
 
     # Plotar o gráfico
     plt.figure(figsize=(30, 15))
-    plt.plot(ep_rewards)
+    plt.plot(total_rewards)
     plt.xlabel("Episodes")
     plt.ylabel("Total Reward")
     plt.title("Total Rewards per Episode")
