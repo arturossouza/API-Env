@@ -71,7 +71,7 @@ def policy_improvement(env, discount_factor=0.9, theta=0.000001):
 
     while True:
         V, rewards = policy_evaluation(policy, env, discount_factor, theta)
-        total_rewards.extend(rewards)  # Armazena todas as recompensas acumuladas de cada episódio
+        total_rewards.append(rewards)  # Armazena todas as recompensas acumuladas de cada episódio
 
         policy_stable = True
         for s in range(env.state_space):
