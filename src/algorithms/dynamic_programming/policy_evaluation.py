@@ -19,7 +19,7 @@ def policy_evaluation(policy, env, discount_factor=0.9, theta=0.000001):
 
     while True:
         delta = 0
-        episode_reward = 0  # Recompensa acumulada para cada episódio
+        episode_reward = 0  # Recompensa acumulada para cada episódio (resetada a cada iteração)
 
         for s in range(env.state_space):
             v = 0
@@ -43,11 +43,14 @@ def policy_evaluation(policy, env, discount_factor=0.9, theta=0.000001):
                         * (reward + penalty + discount_factor * V[next_state])
                     )
 
+                    # Acumula a recompensa **somente para este episódio**
+                    episode_reward += prob * (reward + penalty)
+
             delta = max(delta, np.abs(v - V[s]))
             V[s] = v
 
-        # Acumula a recompensa do episódio
-        total_rewards.append(np.sum(V))  # Usando a soma da função de valor para medir as recompensas
+        # Armazena a recompensa total acumulada no episódio
+        total_rewards.append(episode_reward)
 
         if delta < theta:
             break
