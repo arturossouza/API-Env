@@ -1,6 +1,5 @@
 import numpy as np
 
-
 def policy_evaluation(policy, env, discount_factor=0.9, theta=0.000001):
     """
     Avalia uma política, calculando a função de valor V(s) para cada estado e as recompensas totais por episódio.
