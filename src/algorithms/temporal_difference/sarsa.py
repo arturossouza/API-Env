@@ -2,7 +2,6 @@ import itertools
 from collections import defaultdict
 import numpy as np
 
-
 def epsilon_greedy(q_values, epsilon: float, num_actions: int):
     """
     Cria uma política epsilon-greedy com base nos valores Q e epsilon fornecidos.
@@ -29,7 +28,6 @@ def epsilon_greedy(q_values, epsilon: float, num_actions: int):
 
     return epsilon_greedy_policy
 
-
 def sarsa_learning(
     env,
     num_episodes: int,
@@ -49,6 +47,8 @@ def sarsa_learning(
 
     Retorno:
         q_values: A função de valor de ação ótima, um dicionário que mapeia estado -> valores de ação.
+        policy: A política determinística final, derivada da função Q.
+        total_rewards: Lista contendo a recompensa total acumulada por episódio.
     """
 
     # Função de valor-ação final
@@ -57,16 +57,23 @@ def sarsa_learning(
     # A política epsilon-greedy a ser seguida
     policy = epsilon_greedy(q_values, epsilon, env.action_space.n)
 
+    total_rewards = []  # Lista para armazenar a recompensa total por episódio
+
     for episode in range(num_episodes):
         # Reinicia o ambiente e escolhe a primeira ação
         state, _ = env.reset()
         action_probabilities = policy(state)
         action = np.random.choice(np.arange(len(action_probabilities)), p=action_probabilities)
 
+        episode_reward = 0  # Acumula a recompensa do episódio
+
         # Executa um passo no ambiente
         for step in itertools.count():
             # Realiza a ação e obtém o próximo estado e recompensa
             next_state, reward, done, truncated, _ = env.step(action)
+
+            # Acumula a recompensa recebida
+            episode_reward += reward
 
             # Escolhe a próxima ação com base na política epsilon-greedy
             next_action_probabilities = policy(next_state)
@@ -87,9 +94,12 @@ def sarsa_learning(
             action = next_action
             state = next_state
 
+        # Armazena a recompensa total do episódio
+        total_rewards.append(episode_reward)
+
         # Exibe o progresso a cada 100 episódios
         if episode % 100 == 0:
-            print(f"Episódio {episode}/{num_episodes} concluído.")
+            print(f"Episódio {episode}/{num_episodes} concluído. Total reward: {episode_reward}")
 
     # Gera a política final determinística (greedy)
     policy = {}
@@ -97,4 +107,4 @@ def sarsa_learning(
         best_action = np.argmax(q_values[state])
         policy[state] = np.eye(env.action_space.n)[best_action]
 
-    return q_values, policy
+    return q_values, policy, total_rewards
