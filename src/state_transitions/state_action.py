@@ -129,8 +129,6 @@ class Capacity(Transitions):
             return "High" if self.capacity == "Medium" else "Medium"
         elif action == "Remove_Memory":
             return "Low" if self.capacity == "High" else "Medium"
-        elif action in ["Corrective_Maintenance", "Preventive_Maintenance", "Restart_Components"]:
-            return "Medium"
         elif action == "Update_Version":
             return "High"
         elif action == "Rollback_Version":
