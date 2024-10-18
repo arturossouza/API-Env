@@ -53,7 +53,7 @@ $$
 For instance, $S_{k}$ could be
 
 $$
-S_{k} = Offline\_Slow\_Healthy\_Low
+S_{k} = Offline\underline{}Slow\underline{}Healthy\underline{}Low
 $$
 
 ## 2.2. Actions
