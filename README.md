@@ -98,7 +98,7 @@ Each of those algorithms implementations can be found on ```src/algorithms``` fo
 
 The table below summarize the results of each algorithm tested.
 
-| **Algoritmo**         | **Média de valores das recompensas dos 10 últimos episódios** |
+| **Algorithm**         | **Avg Value Last 10 Episodes** |
 |-----------------------|-------------------------------------------------------------|
 | Value Iteration       | -1408.626                                                    |
 | Policy Improvement    | -1219007.116                                                 |
