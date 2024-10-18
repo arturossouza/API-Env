@@ -47,7 +47,7 @@ Therefore, the model can take actions to transit between each of those states.
 Is is also worth to mention that a state is composed by a combination of each feature, hence, a valid state $k$ would be:
 
 $$
-S_{k} = Availability(k)\_Speed(k)\_Health(k)\_Capacity(k)
+S_{k} = Availability(k)\underline{}Speed(k)\underline{}Health(k)\underline{}Capacity(k)
 $$
 
 For instance, $S_{k}$ could be
