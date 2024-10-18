@@ -56,7 +56,7 @@ $$
 S_{k} = Offline\underline{}Slow\underline{}Healthy\underline{}Low
 $$
 
-Based on the states of each feature, this environment suppose to have 54 different states, but it is important to mention that some states are unreachable, and this limitation happens because of the set of actions that we have.
+Based on the states of each feature, this environment suppose to have 54 different states that all can be achieved accordingly with the set of actions taken.
 
 ## 2.2. Actions
 
