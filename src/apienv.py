@@ -19,23 +19,23 @@ class APIEnv(gym.Env):
 
     def __init__(
         self,
-        state_rewards: dict = {
-            "availability": {"Available": 5, "Offline": -40},
-            "response_speed": {"Fast": 7, "Medium": -2, "Slow": -5},
-            "health": {"Healthy": 5, "Error": -10, "Overloaded": -8},
-            "request_capacity": {"Low": -5, "Medium": -1, "High": 2},
-        },
-        actions_penalties: dict = {
-            "Increase_CPU": -120,
+            state_rewards={
+                "availability": {"Available": 20, "Offline": -200},
+                "response_speed": {"Fast": 15, "Medium": -15, "Slow": -100},
+                "health": {"Healthy": 5, "Error": -100, "Overloaded": -50},
+                "request_capacity": {"Low": -25, "Medium": -12, "High": 5},
+            },
+        actions_penalties = {
+            "Increase_CPU": -30,
             "Increase_CPU_Slightly": -20,
-            "Decrease_CPU": 3,
-            "Decrease_CPU_Slightly": 2,
+            "Decrease_CPU": -1,
+            "Decrease_CPU_Slightly": -2,
             "Corrective_Maintenance": -7,
             "Preventive_Maintenance": -3,
-            "Restart_Components": -4,
+            "Restart_Components": -10,
             "Update_Version": -6,
             "Rollback_Version": -16,
-            "Add_Memory": -95,
+            "Add_Memory": -20,
             "Remove_Memory": -2,
         },
     ):
