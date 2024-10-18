@@ -15,7 +15,7 @@ The implemented environment represent a Cloud architecture im which the RL agent
 
 ## 2. States, Actions and Rewards/Penalties
 
-```mermaid
+<!-- ```mermaid
     %% flowchart LR
     %%     state1([Available_Fast_Healthy_Low])
     %%     state2([Available_Fast_Healthy_High])
@@ -29,7 +29,7 @@ The implemented environment represent a Cloud architecture im which the RL agent
     %%     state10([Offline_Slow_Overloaded_Low])
     %%     state11([Offline_Slow_Healthy_Medium])
     %%     state12([Offline_Fast_Error_Medium])
-```
+``` -->
 
 ## 2.1. States
 
