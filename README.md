@@ -56,6 +56,8 @@ $$
 S_{k} = Offline\underline{}Slow\underline{}Healthy\underline{}Low
 $$
 
+Based on the states of each feature, this environment suppose to have 54 different states, but it is important to mention that some states are unreachable, and this limitation happens because of the set of actions that we have.
+
 ## 2.2. Actions
 
 A complete list of all actions that can be taken is available on ```src/apienv.py``` or in the beginning of the ```main.ipynb```, where also have all the experiments with the API Env.
