@@ -78,7 +78,6 @@ $$
 Reward(k) \leftarrow{} Reward(k) + Penalty(k)
 $$
 
-
 # 3. Experiments
 
 On the ```main.ipynb``` we have all the experiments that were tried with this new environment.
@@ -96,3 +95,14 @@ The current algorithms tested was:
   * Expected SARSA
 
 Each of those algorithms implementations can be found on ```src/algorithms``` folder, and the results of each algorithms such as the environment setup can be found in the main notebook.
+
+The table below summarize the results of each algorithm tested.
+
+| **Algoritmo**         | **Média de valores das recompensas dos 10 últimos episódios** |
+|-----------------------|-------------------------------------------------------------|
+| Value Iteration       | -1408.626                                                    |
+| Policy Improvement    | -1219007.116                                                 |
+| Monte Carlo           | -160.800                                                     |
+| Q-learning            | 288.500                                                      |
+| SARSA                 | -41.700                                                      |
+| Expected SARSA        | -32.800                                                      |
